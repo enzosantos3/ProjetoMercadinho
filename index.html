@@ -46,7 +46,13 @@
         <section id="produtos" class="products-section">
             <h2>Nossos Produtos</h2>
             <div class="products-grid" id="productsGrid">
-                <!-- Produtos serão carregados dinamicamente -->
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+                    <p>Carregando produtos...</p>
+                </div>
+            </div>
+            <div id="authRequiredMessage" class="auth-message" style="display: none;">
+                <p>Para visualizar os produtos, por favor, <a href="login.html">faça login</a> ou <a href="cadastro.html">cadastre-se</a>.</p>
             </div>
         </section>
 
@@ -61,20 +67,18 @@
         </section>
     </main>
 
-    <!-- Carrinho de Compras -->
     <div id="cart" class="cart-sidebar">
         <div class="cart-header">
             <h3>🛒 Carrinho de Compras</h3>
             <button onclick="toggleCart()" class="close-cart">×</button>
         </div>
         <div class="cart-items" id="cartItems">
-            <!-- Itens do carrinho serão carregados aqui -->
-        </div>
+            </div>
         <div class="cart-footer">
             <div class="cart-total">
                 <strong>Total: R$ <span id="cartTotal">0,00</span></strong>
             </div>
-            <button onclick="checkout()" class="btn-checkout">Finalizar Compra</button>
+            <button onclick="goToCheckout()" class="btn-checkout">Finalizar Compra</button>
         </div>
     </div>
 
