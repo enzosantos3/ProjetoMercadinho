@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mercadinho Digital - Carrinho</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1a1a; /* Preto */
+      color: #e0e0e0; /* Texto claro */
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #007bff; /* Azul */
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .back-link {
+      background-color: white;
+      color: #007bff;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .back-link:hover {
+      background-color: #e0e0e0;
+    }
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: #2a2a2a; /* Cinza escuro para o conteúdo */
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 30px;
+    }
+    #cart-items {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #3a3a3a;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .cart-item img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin-right: 15px;
+      border-radius: 5px;
+      background-color: white;
+      padding: 3px;
+    }
+    .item-details {
+      flex-grow: 1;
+    }
+    .item-details h3 {
+      margin: 0;
+      font-size: 1.1em;
+      color: #e0e0e0;
+    }
+    .item-details p {
+      margin: 5px 0 0;
+      font-size: 0.9em;
+      color: #b0b0b0;
+    }
+    .item-quantity {
+      display: flex;
+      align-items: center;
+    }
+    .item-quantity input {
+      width: 50px;
+      padding: 5px;
+      text-align: center;
+      border: 1px solid #007bff;
+      border-radius: 5px;
+      background-color: #4a4a4a;
+      color: white;
+    }
+    .item-quantity button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .item-quantity button:hover {
+      background-color: #0056b3;
+    }
+    .remove-item {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .remove-item:hover {
+      background-color: #c82333;
+    }
+    .cart-summary {
+      text-align: right;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #4a4a4a;
+    }
+    .cart-summary p {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #4CAF50;
+      margin: 0 0 15px;
+    }
+    .cart-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .cart-actions button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .cart-actions button.clear-cart {
+      background-color: #ffc107; /* Amarelo para limpar */
+      color: #333;
+    }
+    .cart-actions button.clear-cart:hover {
+      background-color: #e0a800;
+    }
+    .cart-actions button.checkout {
+      background-color: #007bff; /* Azul */
+      color: white;
+    }
+    .cart-actions button.checkout:hover {
+      background-color: #0056b3;
+    }
+    .empty-cart-message {
+      text-align: center;
+      font-size: 1.1em;
+      color: #b0b0b0;
+      margin-top: 30px;
+    }
+
+    /* Checkout Modal */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #2a2a2a;
+      margin: 5% auto;
+      padding: 30px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      color: #e0e0e0;
+    }
+    .close-button {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close-button:hover,
+    .close-button:focus {
+      color: #007bff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .modal-content h3 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    .modal-content label {
+      display: block;
+      margin-bottom: 8px;
+      color: #b0b0b0;
+    }
+    .modal-content input,
+    .modal-content select {
+      width: calc(100% - 22px); /* Ajusta para padding e borda */
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #007bff;
+      border-radius: 5px;
+      background-color: #3a3a3a;
+      color: white;
+    }
+    .modal-content input::placeholder {
+        color: #888;
+    }
+    .modal-content button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .modal-content button:hover {
+      background-color: #0056b3;
+    }
+    #checkout-message {
+        text-align: center;
+        margin-top: 15px;
+        color: #4CAF50; /* Verde para sucesso */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Seu Carrinho</h1>
+    <nav>
+      <a href="index.html" class="back-link">Continuar Comprando</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Itens no Carrinho</h2>
+    <ul id="cart-items">
+      </ul>
+    <p id="empty-cart-message" class="empty-cart-message" style="display: none;">Seu carrinho está vazio.</p>
+
+    <div class="cart-summary">
+      <p>Total: R$ <span id="cart-total">0.00</span></p>
+      <div class="cart-actions">
+        <button class="clear-cart" id="clear-cart-button">Limpar Carrinho</button>
+        <button class="checkout" id="checkout-button">Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h3>Finalizar Compra</h3>
+      <form id="checkoutForm">
+        <label for="nome">Nome Completo:</label>
+        <input type="text" id="nome" required placeholder="Seu nome">
+
+        <label for="endereco">Endereço de Entrega:</label>
+        <input type="text" id="endereco" required placeholder="Rua, Número, Bairro, Cidade, CEP">
+
+        <label for="pagamento">Método de Pagamento:</label>
+        <select id="pagamento" required>
+          <option value="">Selecione um método</option>
+          <option value="credito">Cartão de Crédito</option>
+          <option value="boleto">Boleto Bancário</option>
+          <option value="pix">PIX</option>
+        </select>
+
+        <button type="submit">Confirmar Pedido</button>
+        <p id="checkout-message"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/cart.js"></script>
+</body>
+</html>

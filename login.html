@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1a1a1a; /* Preto */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Sombra mais escura */
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #007bff; /* Azul */
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #007bff; /* Borda azul */
+    }
+    button {
+      background-color: #007bff; /* Azul */
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* Transição suave */
+    }
+    button:hover {
+      background-color: #0056b3; /* Azul mais escuro no hover */
+    }
+    #mensagem {
+      text-align: center;
+      margin-top: 10px;
+      color: #d8000c; /* Vermelho para mensagens de erro */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" id="login" placeholder="Login" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <p id="mensagem"></p>
+    <p style="text-align: center; margin-top: 15px;"><a href="cadastro.html" style="color: #007bff; text-decoration: none;">Não tem uma conta? Cadastre-se!</a></p>
+  </div>
+  <script src="js/login.js"></script>
+</body>
+</html>
