@@ -1,127 +1,91 @@
 # 🛒 Mercadinho Online
 
-Um sistema completo de e-commerce desenvolvido com HTML, CSS e JavaScript puro, utilizando as cores azul e roxo conforme solicitado. O projeto integra com a **FakeStoreAPI** para buscar produtos reais da internet.
+**Bem-vindo(a) ao Mercadinho Online!**  
+Este é um projeto pessoal que simula uma experiência completa de e-commerce, desenvolvido com **HTML, CSS e JavaScript puro**. O grande diferencial é a integração com a **FakeStoreAPI**, exibindo produtos reais da internet em tempo real!
+
+---
 
 ## ✨ Funcionalidades
 
-- **Sistema de Autenticação**: Login e cadastro de usuários
-- **Catálogo de Produtos**: Produtos reais da FakeStoreAPI
-- **Carrinho de Compras**: Adicionar, remover e alterar quantidades
-- **Design Responsivo**: Funciona em desktop e mobile
-- **Persistência de Dados**: Usa localStorage para salvar dados
-- **Interface Moderna**: Design com gradientes azul e roxo
-- **API Integration**: Produtos dinâmicos da FakeStoreAPI
+- **🔐 Autenticação**  
+  Cadastro, login e logout com persistência de sessão via `localStorage`.
 
-## 🎨 Design
+- **🛍️ Catálogo Dinâmico**  
+  Produtos reais da FakeStoreAPI com imagem, descrição, preço e avaliação.
 
-O projeto utiliza uma paleta de cores baseada em azul e roxo:
-- **Azul Principal**: `#667eea`
-- **Roxo Principal**: `#764ba2`
-- **Gradientes**: Combinações suaves entre azul e roxo
-- **Interface**: Design moderno com efeitos de glassmorphism
+- **🛒 Carrinho de Compras**  
+  Adição, remoção, alteração de quantidade e cálculo automático do total, tudo salvo no `localStorage`.
+
+- **📱 Design Responsivo**  
+  Interface adaptada para desktop, tablet e celular.
+
+- **💾 Persistência de Dados**  
+  Seu carrinho continua salvo mesmo após fechar o navegador.
+
+- **⚙️ Fallback Inteligente**  
+  Se a API falhar, produtos locais são carregados como backup.
+
+---
+
+## 🎨 Design e Estilo
+
+- **Paleta de Cores:**
+  - Azul: `#667eea`
+  - Roxo: `#764ba2`
+  - Gradientes entre azul e roxo, com inspiração em *glassmorphism*.
+
+- **Interface:**
+  - Moderna, limpa e intuitiva.
+  - Animações suaves e navegação fluida.
+  - Notificações em tempo real.
+
+---
 
 ## 📁 Estrutura do Projeto
 
 ```
 mercadinho/
-├── index.html          # Página principal do mercadinho
-├── login.html          # Página de login
-├── cadastro.html       # Página de cadastro
-├── dashboard.html      # Painel de controle
-├── styles.css          # Estilos CSS
-├── script.js           # JavaScript principal
-├── login.js            # JavaScript do login
-├── cadastro.js         # JavaScript do cadastro
-└── README.md           # Este arquivo
+├── index.html         # Página principal
+├── login.html         # Página de login
+├── cadastro.html      # Página de cadastro
+├── styles.css         # Estilos principais
+├── script.js          # JavaScript global
+├── js/
+│   ├── login.js       # Lógica de login
+│   ├── cadastro.js    # Lógica de cadastro
+│   └── cart.js        # Lógica do carrinho
+└── README.md          # Este arquivo explicativo
 ```
+
+---
 
 ## 🚀 Como Usar
 
-1. **Abra o arquivo `index.html`** no seu navegador
-2. **Cadastre-se** clicando em "Cadastro" no menu
-3. **Faça login** com suas credenciais
-4. **Navegue pelos produtos** e adicione ao carrinho
-5. **Finalize a compra** através do carrinho
+1. Clone este repositório.
+2. Abra o `index.html` no navegador.
+3. Cadastre-se e faça login.
+4. Navegue pelo catálogo e adicione produtos ao carrinho.
+5. Finalize sua compra (simulada).
 
-## 🛍️ Produtos Disponíveis
+---
 
-O sistema busca produtos dinamicamente da **FakeStoreAPI** (https://fakestoreapi.com/products), incluindo:
+## 🧪 Tecnologias Utilizadas
 
-### Categorias Disponíveis
-- **Electronics**: Smartphones, laptops, acessórios
-- **Jewelery**: Joias e acessórios
-- **Men's Clothing**: Roupas masculinas
-- **Women's Clothing**: Roupas femininas
+- HTML5
+- CSS3 (Flexbox + Grid)
+- JavaScript ES6+
+- Fetch API
+- LocalStorage
+- Async/Await
 
-### Informações dos Produtos
-- **Imagens reais** dos produtos
-- **Preços** em dólares (convertidos para reais)
-- **Descrições** detalhadas
-- **Avaliações** e ratings
-- **Categorias** organizadas
+---
 
-## 🔧 Funcionalidades Técnicas
+## 🔌 Integração com API
 
-### Sistema de Autenticação
-- Cadastro de novos usuários
-- Login com validação
-- Logout automático
-- Persistência de sessão
-
-### Carrinho de Compras
-- Adicionar produtos
-- Alterar quantidades
-- Remover itens
-- Cálculo automático do total
-- **Persistência no localStorage**
-
-### API Integration
-- **FakeStoreAPI**: Busca produtos reais da internet
-- **Fallback**: Produtos locais em caso de erro de conexão
-- **Loading States**: Indicadores de carregamento
-- **Error Handling**: Tratamento de erros de API
-
-### Interface
-- Design responsivo
-- Animações suaves
-- Notificações em tempo real
-- Navegação intuitiva
-- Imagens otimizadas
-
-## 🎯 Tecnologias Utilizadas
-
-- **HTML5**: Estrutura semântica
-- **CSS3**: Estilos modernos com Flexbox e Grid
-- **JavaScript ES6+**: Funcionalidades interativas
-- **Fetch API**: Busca de dados da FakeStoreAPI
-- **LocalStorage**: Persistência de dados
-- **Async/Await**: Programação assíncrona
-
-## 📱 Responsividade
-
-O projeto é totalmente responsivo e funciona em:
-- Desktop (1024px+)
-- Tablet (768px - 1023px)
-- Mobile (até 767px)
-
-## 🔒 Segurança
-
-- Validação de formulários
-- Verificação de usuário existente
-- Proteção contra acesso não autorizado
-- Sanitização de dados de entrada
-- Tratamento seguro de dados da API
-
-## 🌐 API Integration
-
-### FakeStoreAPI
-- **Endpoint**: `https://fakestoreapi.com/products`
-- **Método**: GET
-- **Resposta**: Array de produtos com imagens, preços e descrições
-- **Fallback**: Produtos locais em caso de erro
-
-### Estrutura dos Dados
-```javascript
+- **API:** [FakeStoreAPI](https://fakestoreapi.com/products)  
+- **Endpoint:** `GET /products`  
+- **Exemplo de dados:**
+```js
 {
   id: number,
   title: string,
@@ -136,21 +100,37 @@ O projeto é totalmente responsivo e funciona em:
 }
 ```
 
-## 🚀 Melhorias Futuras
+---
 
-- Sistema de busca de produtos
-- Filtros por categoria
-- Histórico de compras
-- Sistema de avaliações
-- Integração com APIs de pagamento
-- Página de detalhes do produto
-- Cache de produtos para melhor performance
-- Sistema de favoritos
+## 🔒 Segurança (Básica)
 
-## 📞 Suporte
-
-Para dúvidas ou sugestões, entre em contato através do email: contato@mercadinho.com
+- Validação de formulários
+- Verificação de usuário duplicado
+- Redirecionamento para login se não autenticado
+- Sanitização simples de entradas
+- Tratamento de erros de API
 
 ---
 
-**Desenvolvido com ❤️ usando HTML, CSS e JavaScript + FakeStoreAPI** 
+## 📱 Responsividade
+
+- Desktop: ≥ 1024px  
+- Tablet: 768px – 1023px  
+- Mobile: ≤ 767px
+
+---
+
+## 🎯 Melhorias Futuras
+
+- Filtro e busca por produtos  
+- Histórico de compras  
+- Sistema de avaliações  
+- Integração com pagamentos reais  
+- Página de detalhes por produto  
+- Cache local  
+- Lista de favoritos
+
+---
+
+**Desenvolvido com ❤️ por Enzo dos Santos Mendes**  
+HTML • CSS • JavaScript • FakeStoreAPI
