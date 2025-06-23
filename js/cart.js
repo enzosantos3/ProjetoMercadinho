@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getCart() {
-        return JSON.parse(localStorage.getItem("cart")) || [];
+        return JSON.parse(localStorage.getItem("carrinho")) || []; // Mudado para 'carrinho' para consistência
     }
 
     function saveCart(cart) {
-        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("carrinho", JSON.stringify(cart)); // Mudado para 'carrinho'
         renderCart();
     }
 
@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const itemIndex = cart.findIndex(item => item.id === productId);
 
         if (itemIndex > -1) {
-            cart[itemIndex].quantity += change;
-            if (cart[itemIndex].quantity <= 0) {
+            cart[itemIndex].quantidade += change; // Mudado para 'quantidade'
+            if (cart[itemIndex].quantidade <= 0) {
                 cart.splice(itemIndex, 1); // Remove if quantity is 0 or less
             }
             saveCart(cart);
@@ -48,14 +48,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function clearCart() {
         if (confirm("Tem certeza que deseja limpar todo o carrinho?")) {
-            localStorage.removeItem("cart");
+            localStorage.removeItem("carrinho"); // Mudado para 'carrinho'
             renderCart();
             alert("Carrinho limpo!");
         }
     }
 
     function calculateCartTotal(cart) {
-        return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        return cart.reduce((total, item) => total + (item.preco * item.quantidade), 0); // Mudado para 'preco' e 'quantidade'
     }
 
     function renderCart() {
@@ -78,18 +78,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const listItem = document.createElement("li");
             listItem.className = "cart-item";
             listItem.innerHTML = `
-                <img src="${item.image}" alt="${item.title}" />
+                <img src="${item.imagem}" alt="${item.nome}" />
                 <div class="item-details">
-                    <h3>${item.title}</h3>
-                    <p>Preço unitário: R$ ${item.price.toFixed(2)}</p>
+                    <h3>${item.nome}</h3>
+                    <p>Preço unitário: R$ ${item.preco.toFixed(2)}</p>
                 </div>
                 <div class="item-quantity">
                     <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
-                    <input type="number" value="${item.quantity}" min="1" readonly>
+                    <input type="number" value="${item.quantidade}" min="1" readonly>
                     <button class="quantity-btn" data-id="${item.id}" data-change="1">+</button>
                 </div>
                 <div class="item-total">
-                    R$ ${(item.price * item.quantity).toFixed(2)}
+                    R$ ${(item.preco * item.quantidade).toFixed(2)}
                 </div>
                 <button class="remove-item" data-id="${item.id}">Remover</button>
             `;
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             alert("Pedido finalizado com sucesso! Obrigado por sua compra.");
-            localStorage.removeItem("cart"); // Limpa o carrinho após a compra
+            localStorage.removeItem("carrinho"); // Limpa o carrinho após a compra
             checkoutModal.style.display = "none";
             renderCart(); // Atualiza a visualização do carrinho
             checkoutForm.reset(); // Limpa o formulário de checkout
@@ -170,4 +170,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Renderiza o carrinho ao carregar a página
     renderCart();
+
+    // Adiciona listener para mudanças no localStorage de outras abas
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'carrinho') {
+            renderCart(); // Re-renderiza o carrinho se ele for alterado em outra aba
+        }
+        if (event.key === 'usuarioLogado' && !localStorage.getItem('usuarioLogado')) {
+            window.location.href = "login.html"; // Redireciona se o usuário deslogar de outra aba
+        }
+    });
 });
