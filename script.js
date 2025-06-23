@@ -2,23 +2,51 @@
 let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 let produtos = [];
 
+// Redirecionar para login
+function redirectToLogin() {
+    window.location.href = "login.html";
+}
+
 // Buscar produtos da API
 async function buscarProdutos() {
+    const productsGrid = document.getElementById('productsGrid');
+    const authRequiredMessage = document.getElementById('authRequiredMessage');
+    const usuario = localStorage.getItem("usuarioLogado");
+
+    if (!usuario) {
+        productsGrid.style.display = 'none';
+        authRequiredMessage.style.display = 'block';
+        return;
+    } else {
+        productsGrid.style.display = 'grid';
+        authRequiredMessage.style.display = 'none';
+    }
+
+    productsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+            <p>Carregando produtos...</p>
+        </div>
+    `;
+
     try {
         const response = await fetch('https://fakestoreapi.com/products');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const dados = await response.json();
-        
+
         // Transformar os dados da API para nosso formato
-        produtos = dados.map((produto, index) => ({
+        produtos = dados.map(produto => ({
             id: produto.id,
             nome: produto.title,
-            preco: produto.price,
+            preco: produto.price, // Preço em dólar, sem conversão para reais
             categoria: produto.category,
             imagem: produto.image,
             descricao: produto.description.substring(0, 100) + '...',
             rating: produto.rating
         }));
-        
+
         carregarProdutos();
     } catch (error) {
         console.error('Erro ao buscar produtos:', error);
@@ -30,7 +58,8 @@ async function buscarProdutos() {
                 preco: 8.50,
                 categoria: "Grãos",
                 imagem: "https://via.placeholder.com/300x300/667eea/ffffff?text=🌾",
-                descricao: "Arroz integral rico em fibras"
+                descricao: "Arroz integral rico em fibras",
+                rating: { rate: 4.5, count: 120 }
             },
             {
                 id: 2,
@@ -38,10 +67,21 @@ async function buscarProdutos() {
                 preco: 6.80,
                 categoria: "Grãos",
                 imagem: "https://via.placeholder.com/300x300/667eea/ffffff?text=🫘",
-                descricao: "Feijão preto de qualidade"
+                descricao: "Feijão preto de qualidade",
+                rating: { rate: 4.8, count: 200 }
+            },
+            {
+                id: 3,
+                nome: "Leite Desnatado",
+                preco: 4.20,
+                categoria: "Laticínios",
+                imagem: "https://via.placeholder.com/300x300/667eea/ffffff?text=🥛",
+                descricao: "Leite desnatado UHT",
+                rating: { rate: 4.0, count: 80 }
             }
         ];
         carregarProdutos();
+        mostrarNotificacao('Erro ao carregar produtos da API. Exibindo produtos de exemplo.', 'error');
     }
 }
 
@@ -60,25 +100,29 @@ function verificarLogin() {
         userInfo.style.display = 'none';
         loginButtons.style.display = 'flex';
     }
+    // Recarregar produtos para exibir ou ocultar com base no status de login
+    buscarProdutos();
 }
 
 // Função de logout
 function logout() {
     localStorage.removeItem("usuarioLogado");
+    localStorage.removeItem("carrinho"); // Limpa o carrinho ao fazer logout
     verificarLogin();
+    atualizarContadorCarrinho();
     alert('Logout realizado com sucesso!');
+    window.location.href = "index.html"; // Redireciona para a página inicial após o logout
 }
 
 // Carregar produtos na página
 function carregarProdutos() {
     const productsGrid = document.getElementById('productsGrid');
-    productsGrid.innerHTML = '';
+    productsGrid.innerHTML = ''; // Limpa o "Carregando produtos..."
 
     if (produtos.length === 0) {
         productsGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
-                <p>Carregando produtos...</p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #555;">
+                <p>Nenhum produto disponível no momento.</p>
             </div>
         `;
         return;
@@ -110,6 +154,12 @@ function carregarProdutos() {
 
 // Adicionar produto ao carrinho
 function adicionarAoCarrinho(produtoId) {
+    const usuario = localStorage.getItem("usuarioLogado");
+    if (!usuario) {
+        mostrarNotificacao('Por favor, faça login para adicionar produtos ao carrinho.', 'error');
+        return;
+    }
+
     const produto = produtos.find(p => p.id === produtoId);
     const itemExistente = carrinho.find(item => item.id === produtoId);
 
@@ -133,6 +183,7 @@ function adicionarAoCarrinho(produtoId) {
 // Salvar carrinho no localStorage
 function salvarCarrinho() {
     localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    carregarCarrinho(); // Atualiza a sidebar do carrinho
 }
 
 // Atualizar contador do carrinho
@@ -143,53 +194,55 @@ function atualizarContadorCarrinho() {
 }
 
 // Mostrar notificação
-function mostrarNotificacao(mensagem) {
+function mostrarNotificacao(mensagem, tipo = 'success') {
     const notificacao = document.createElement('div');
     notificacao.style.cssText = `
         position: fixed;
         top: 100px;
         right: 20px;
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        background: ${tipo === 'success' ? 'linear-gradient(45deg, #667eea, #764ba2)' : '#dc3545'};
         color: white;
         padding: 1rem 2rem;
         border-radius: 10px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         z-index: 10000;
-        animation: slideIn 0.3s ease;
+        animation: slideIn 0.3s ease forwards;
+        opacity: 0;
     `;
     notificacao.textContent = mensagem;
     document.body.appendChild(notificacao);
 
     setTimeout(() => {
-        notificacao.style.animation = 'slideOut 0.3s ease';
+        notificacao.style.animation = 'slideOut 0.3s ease forwards';
         setTimeout(() => {
             document.body.removeChild(notificacao);
         }, 300);
-    }, 2000);
+    }, 3000); // Notificação visível por 3 segundos
 }
+
 
 // Toggle do carrinho
 function toggleCart() {
     const cart = document.getElementById('cart');
     const overlay = document.getElementById('cartOverlay');
-    
+
     if (cart.classList.contains('open')) {
         cart.classList.remove('open');
         overlay.classList.remove('show');
     } else {
         cart.classList.add('open');
         overlay.classList.add('show');
-        carregarCarrinho();
+        carregarCarrinho(); // Garante que o carrinho está atualizado ao abrir
     }
 }
 
-// Carregar itens do carrinho
+// Carregar itens do carrinho na sidebar
 function carregarCarrinho() {
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
-    
+
     cartItems.innerHTML = '';
-    
+
     if (carrinho.length === 0) {
         cartItems.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Carrinho vazio</p>';
         cartTotal.textContent = '0,00';
@@ -197,7 +250,7 @@ function carregarCarrinho() {
     }
 
     let total = 0;
-    
+
     carrinho.forEach(item => {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
@@ -217,26 +270,25 @@ function carregarCarrinho() {
             <button class="remove-item" onclick="removerItem(${item.id})">Remover</button>
         `;
         cartItems.appendChild(cartItem);
-        
+
         total += item.preco * item.quantidade;
     });
-    
+
     cartTotal.textContent = total.toFixed(2);
 }
 
 // Alterar quantidade de um item
 function alterarQuantidade(produtoId, delta) {
     const item = carrinho.find(item => item.id === produtoId);
-    
+
     if (item) {
         item.quantidade += delta;
-        
+
         if (item.quantidade <= 0) {
             removerItem(produtoId);
         } else {
-            salvarCarrinho();
+            salvarCarrinho(); // Salva e recarrega a sidebar
             atualizarContadorCarrinho();
-            carregarCarrinho();
         }
     }
 }
@@ -244,41 +296,24 @@ function alterarQuantidade(produtoId, delta) {
 // Remover item do carrinho
 function removerItem(produtoId) {
     carrinho = carrinho.filter(item => item.id !== produtoId);
-    salvarCarrinho();
+    salvarCarrinho(); // Salva e recarrega a sidebar
     atualizarContadorCarrinho();
-    carregarCarrinho();
 }
 
-// Finalizar compra
-function checkout() {
-    if (carrinho.length === 0) {
-        alert('Carrinho vazio!');
-        return;
-    }
-
+// Redirecionar para a página de checkout (cart.html)
+function goToCheckout() {
     const usuario = localStorage.getItem("usuarioLogado");
     if (!usuario) {
-        alert('Faça login para finalizar a compra!');
-        toggleCart();
+        mostrarNotificacao('Por favor, faça login para finalizar a compra.', 'error');
         return;
     }
-
-    const total = carrinho.reduce((total, item) => total + (item.preco * item.quantidade), 0);
-    
-    const confirmacao = confirm(`Total da compra: R$ ${total.toFixed(2)}\n\nConfirmar compra?`);
-    
-    if (confirmacao) {
-        // Simular processamento da compra
-        alert('Compra realizada com sucesso! Obrigado por escolher nosso mercadinho!');
-        
-        // Limpar carrinho
-        carrinho = [];
-        salvarCarrinho();
-        atualizarContadorCarrinho();
-        carregarCarrinho();
-        toggleCart();
+    if (carrinho.length === 0) {
+        mostrarNotificacao('Seu carrinho está vazio. Adicione produtos antes de finalizar a compra.', 'error');
+        return;
     }
+    window.location.href = "cart.html";
 }
+
 
 // Scroll suave para seções
 function scrollToProducts() {
@@ -287,39 +322,11 @@ function scrollToProducts() {
     });
 }
 
-// Adicionar animações CSS
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
 // Inicialização quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
-    verificarLogin();
-    buscarProdutos(); // Buscar produtos da API
-    atualizarContadorCarrinho();
-    
+    verificarLogin(); // Verifica o login e carrega os produtos
+    atualizarContadorCarrinho(); // Atualiza o contador do carrinho na barra de navegação
+
     // Adicionar smooth scroll para links de navegação
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -334,9 +341,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Verificar login a cada mudança de página
+// Verificar login a cada mudança de storage (ex: outra aba fez login/logout)
 window.addEventListener('storage', function(e) {
-    if (e.key === 'usuarioLogado') {
+    if (e.key === 'usuarioLogado' || e.key === 'carrinho') {
         verificarLogin();
+        atualizarContadorCarrinho();
+        if (document.getElementById('cart').classList.contains('open')) {
+            carregarCarrinho(); // Atualiza a sidebar se estiver aberta
+        }
     }
-}); 
+});
